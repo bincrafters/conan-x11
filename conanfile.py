@@ -1,3 +1,5 @@
+# ATTENTION: this is not an actual conanfile! do not use it!
+
 from conans import ConanFile, CMake, tools
 import os
 
