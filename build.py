@@ -4,8 +4,7 @@
 import json
 import subprocess
 import sys
-import shutil
-from bincrafters import build_template_default
+from bincrafters import build_template_default, build_shared
 from conans import tools
 
 if __name__ == "__main__":
@@ -17,6 +16,11 @@ if __name__ == "__main__":
 
     for packages in json_data.values():
         for package in packages:
-            shutil.move("conanfile-{}.py".format(package), "conanfile.py")
-            builder = build_template_default.get_builder()
-            builder.run()
+            recipe = "conanfile-{}.py".format(package)
+            version = build_shared.get_version_from_recipe(recipe)
+            with tools.environment_append({
+                "CONAN_CONANFILE": recipe,
+                "CONAN_VERSION": version
+                }):
+                builder = build_template_default.get_builder()
+                builder.run()
