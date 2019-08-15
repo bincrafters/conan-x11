@@ -4,7 +4,7 @@
 import json
 import subprocess
 import sys
-import tempfile
+import os
 from bincrafters import build_template_default, build_shared
 from conans import tools
 
@@ -15,8 +15,9 @@ if __name__ == "__main__":
     with open("groups.json") as json_file:
         json_data = json.load(json_file)
 
-    cache_folder = tempfile.mkdtemp("conan")
-    docker_args = "-v {}:/home/conan/.conan/data".format(cache_folder)
+    tools.mkdir("data")
+    path = os.path.abspath("data")
+    docker_args = "-v {}:/home/conan/.conan/data".format(path)
     for packages in json_data.values():
         for package in packages:
             recipe = "conanfile-{}.py".format(package.lower())
