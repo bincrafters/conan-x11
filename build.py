@@ -16,14 +16,16 @@ if __name__ == "__main__":
         json_data = json.load(json_file)
 
     cache_folder = tempfile.mkdtemp("conan")
-    docker_args = "'-v ${PWD}:/home/conan/.conan/data'"
+    docker_args = "-v {}:/home/conan/.conan/data".format(cache_folder)
     for packages in json_data.values():
         for package in packages:
             recipe = "conanfile-{}.py".format(package.lower())
+            test_package_folder = "test_package-{}".format(package.lower())
             version = build_shared.get_version_from_recipe(recipe)
             with tools.environment_append({
                 "CONAN_CONANFILE": recipe,
                 "CONAN_VERSION": version,
+                # "CPT_TEST_FOLDER": test_package_folder
                 "CONAN_DOCKER_RUN_OPTIONS": docker_args
                 }):
                 builder = build_template_default.get_builder(docker_args)
