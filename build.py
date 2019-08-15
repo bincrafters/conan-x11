@@ -15,9 +15,12 @@ if __name__ == "__main__":
     with open("groups.json") as json_file:
         json_data = json.load(json_file)
 
-    tools.mkdir("data")
-    path = os.path.abspath("data")
+    cache_dir = "data"
+    tools.rmdir(cache_dir)
+    tools.mkdir(cache_dir)
+    path = os.path.abspath(cache_dir)
     docker_args = "-v {}:/home/conan/.conan/data".format(path)
+
     for packages in json_data.values():
         for package in packages:
             recipe = "conanfile-{}.py".format(package.lower())
