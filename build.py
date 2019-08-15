@@ -4,6 +4,7 @@
 import json
 import subprocess
 import sys
+import shutil
 from bincrafters import build_template_default
 from conans import tools
 
@@ -15,8 +16,7 @@ if __name__ == "__main__":
         json_data = json.load(json_file)
 
     for packages in json_data.values():
-        print(packages)
         for package in packages:
-            with tools.environment_append({"CONAN_CONANFILE": "conanfile-{}.py".format(package)}):
-                builder = build_template_default.get_builder()
-                builder.run()
+            shutil.move("conanfile-{}.py".format(package), "conanfile.py")
+            builder = build_template_default.get_builder()
+            builder.run()
