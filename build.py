@@ -33,4 +33,5 @@ if __name__ == "__main__":
                 "CONAN_DOCKER_RUN_OPTIONS": docker_args
                 }):
                 builder = build_template_default.get_builder(docker_args)
+                builder.update_build_if(lambda build: True, new_env_vars={"MAKEFLAGS": "--silent"})
                 builder.run()

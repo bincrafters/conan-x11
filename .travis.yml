@@ -2,7 +2,6 @@ env:
    global:
      - CONAN_DOCKER_32_IMAGES: 1
      - CONAN_TOTAL_PAGES: 6
-     - MAKEFLAGS: "--silent"
 
 linux: &linux
    os: linux
