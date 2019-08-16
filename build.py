@@ -7,6 +7,7 @@ import sys
 import os
 from bincrafters import build_template_default, build_shared
 from conans import tools
+from conans.client import conan_api
 
 if __name__ == "__main__":
     subprocess.check_call([sys.executable, "manage.py", "gen"])
@@ -20,12 +21,15 @@ if __name__ == "__main__":
     tools.mkdir(cache_dir)
     path = os.path.abspath(cache_dir)
     docker_args = "-v {}:/home/conan/.conan/data".format(path)
-    entry_script = os.path.join(".ci", "entry.py")
+    entry_script = ".ci/entry.py"
+    conan_instance, _, _ = conan_api.Conan.factory()
 
     for package in json_data["6"]:
         recipe = "conanfile-{}.py".format(package.lower())
         test_package_folder = "test_package-{}".format(package.lower())
-        version = build_shared.get_version_from_recipe(recipe)
+        version = conan_instance.inspect(path=recipe, attributes=["version"])["version"]
+        print(f"VERSIONS: {version}")
+        print(f"RECIPE: {recipe}")
         with tools.environment_append({
             "CONAN_CONANFILE": recipe,
             "CONAN_VERSION": version,

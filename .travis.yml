@@ -3,6 +3,8 @@ env:
      - CONAN_DOCKER_32_IMAGES: 1
      - CONAN_TOTAL_PAGES: 6
      - CONAN_UPLOAD_DEPENDENCIES: 1
+     - CONAN_BUILD_POLICY: "missing"
+
 
 linux: &linux
    os: linux
