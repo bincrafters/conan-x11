@@ -46,3 +46,7 @@ tmp/
 .vscode/*
 ## emacs
 *~
+
+groups.json
+conanfile-*.py
+conanfile.py

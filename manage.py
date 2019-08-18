@@ -105,8 +105,13 @@ def groups(args):
                     return False
         return True
 
+    def create_json_file(dict_groups):
+        file_object = open("groups.json", 'w')
+        json.dump(dict_groups, file_object)
+
     remain = libraries
     groups = []
+    dict_groups = {}
     while remain:
         current_group = []
         for info in remain:
@@ -118,7 +123,10 @@ def groups(args):
     index = 0
     for group in groups:
         print("group %s: %s" % (index, group))
+        dict_groups[index] = group
         index = index + 1
+
+    create_json_file(dict_groups)
 
 
 def main(args):
