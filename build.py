@@ -5,14 +5,16 @@ import json
 import subprocess
 import sys
 import os
+import re
 from bincrafters import build_template_default, build_shared
 from conans import tools
 from conans.client import conan_api
 
 
 def get_channel_name():
+    stable_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", "stable/*")
     if os.getenv("TRAVIS") and \
-       os.getenv("TRAVIS_BRANCH") == "master" and \
+       re.match(stable_pattern, os.getenv("TRAVIS_BRANCH")) and \
        os.getenv("TRAVIS_PULL_REQUEST", "false") == "false":
        return "stable"
     return os.getenv("CONAN_CHANNEL", "testing")
