@@ -7,6 +7,8 @@ import argparse
 import sys
 import subprocess
 import json
+import os
+import re
 
 conanfile_template = """from conans import tools
 import os
@@ -36,6 +38,15 @@ class {classname}Conan({baseclass}):
 libraries = json.load(open("x11.json"))
 
 
+def get_channel_name():
+    stable_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", "stable/*")
+    if os.getenv("TRAVIS") and \
+       re.match(stable_pattern, os.getenv("TRAVIS_BRANCH")) and \
+       os.getenv("TRAVIS_PULL_REQUEST", "false") == "false":
+       return "stable"
+    return os.getenv("CONAN_CHANNEL", "testing")
+
+
 def find(name):
     for info in libraries:
         if info["name"] == name:
@@ -56,7 +67,7 @@ def gen(args):
                     if "@" in require:
                         requires.append('"%s"' % require)
                     else:
-                        requires.append('"%s/%s@bincrafters/testing"' % (require.lower(), find(require)["version"]))
+                        requires.append('"%s/%s@bincrafters/%s"' % (require.lower(), find(require)["version"], get_channel_name()))
                 requires = ", ".join(requires)
                 requires = "requires = (" + requires + ")"
             else:
@@ -87,8 +98,7 @@ def create(args):
     for info in libraries:
         name = info["name"]
         filename = "conanfile-%s.py" % name.lower()
-        subprocess.check_call(["conan", "create", filename, "bincrafters/testing", "-k"])
-    #"--build", "missing"])
+        subprocess.check_call(["conan", "create", filename, "bincrafters/%s" % get_channel_name(), "-k"])
 
 
 def groups(args):
