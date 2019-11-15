@@ -1,9 +1,8 @@
 env:
    global:
-     - CONAN_DOCKER_32_IMAGES: 1
      - CONAN_TOTAL_PAGES: 3
      - CONAN_UPLOAD_DEPENDENCIES: "all"
-     - CONAN_BUILD_POLICY: "missing"
+     - CONAN_BUILD_POLICY: "outdated"
 
 
 linux: &linux
