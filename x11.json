@@ -172,14 +172,14 @@
         "version": "2.0.3",
         "sha256": "a4b761a37528353a2b83dba364d7c1fd6aef2d554a1a019815f24f7f8866890e",
         "description": "X font handling library for server & utilities",
-        "requires": ["libfontenc", "xtrans", "freetype/2.10.0@bincrafters/stable"]
+        "requires": ["libfontenc", "xtrans", "freetype/2.10.1@"]
     },
     {
         "name": "libXft",
         "version": "2.3.3",
         "sha256": "3c3cf88b1a96e49a3d87d67d9452d34b6e25e96ae83959b8d0a980935014d701",
         "description": "X FreeType library",
-        "requires": ["libXrender", "freetype/2.10.0@bincrafters/stable", "fontconfig/2.13.91@conan/stable"]
+        "requires": ["libXrender", "freetype/2.10.1@", "fontconfig/2.13.91@conan/stable"]
     },
     {
         "name": "libXi",
