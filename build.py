@@ -55,12 +55,13 @@ if __name__ == "__main__":
     elif tools.os_info.is_macos:
         export_recipes()
 
-    for package in json_data["6"]:
-        recipe = "conanfile-{}.py".format(package.lower())
-        test_package_folder = "test_package-{}".format(package.lower())
-        env_vars["CONAN_VERSION"] = conan_instance.inspect(path=recipe, attributes=["version"])["version"]
-        env_vars["CONAN_CONANFILE"] = recipe
-        with tools.environment_append(env_vars):
-            builder = build_template_default.get_builder(docker_entry_script=entry_script)
-            builder.update_build_if(lambda build: True, new_env_vars={"MAKEFLAGS": "--silent"})
-            builder.run()
+    for index in range(6):
+        for package in json_data[str(index)]:
+            recipe = "conanfile-{}.py".format(package.lower())
+            test_package_folder = "test_package-{}".format(package.lower())
+            env_vars["CONAN_VERSION"] = conan_instance.inspect(path=recipe, attributes=["version"])["version"]
+            env_vars["CONAN_CONANFILE"] = recipe
+            with tools.environment_append(env_vars):
+                builder = build_template_default.get_builder(docker_entry_script=entry_script)
+                builder.update_build_if(lambda build: True, new_env_vars={"MAKEFLAGS": "--silent"})
+                builder.run()
