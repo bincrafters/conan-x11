@@ -1,7 +1,6 @@
 env:
    global:
      - CONAN_TOTAL_PAGES: 2
-     - CONAN_UPLOAD_DEPENDENCIES: "all"
      - CONAN_BUILD_POLICY: "outdated"
 
 
