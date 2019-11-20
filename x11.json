@@ -314,7 +314,8 @@
         "description": "XCB image convenience library",
         "namespace": "xcb",
         "requires": ["xcb-util"],
-        "libs": ["xcb-image"]
+        "libs": ["xcb-image"],
+        "patches": ["clang.patch"]
     },
     {
         "name": "xcb-util-keysyms",

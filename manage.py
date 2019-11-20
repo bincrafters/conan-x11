@@ -20,13 +20,16 @@ class {classname}Conan({baseclass}):
     version = "{version}"
     tags = ("conan", "{name}")
     description = '{description}'
-    exports = ["conanfile_base.py"]
+    exports = ["conanfile_base.py", "patches/*.patch"]
+    _patches = {patches}
 
     {requires}
 
     def source(self):
         url = "https://www.x.org/archive/individual/{namespace}/{name}-{version}.tar.gz"
         tools.get(url, sha256="{sha256}")
+        for p in self._patches:
+            tools.patch(".", "patches/%s" % p)
         extracted_dir = "{name}-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
@@ -80,6 +83,7 @@ def gen(args):
             elif not header_only:
                 libs = ['"%s"' % name[3:]]
                 libs = "self.cpp_info.libs.extend([%s])" % ", ".join(libs)
+            patches = info["patches"] if "patches" in info else "[]"
             baseclass = "BaseHeaderOnly" if header_only else "BaseLib"
             namespace = info["namespace"] if "namespace" in info else "lib"
             content = conanfile_template.format(sha256=info["sha256"],
@@ -90,7 +94,8 @@ def gen(args):
                                                 name=name,
                                                 baseclass=baseclass,
                                                 libs=libs,
-                                                classname=classname)
+                                                classname=classname,
+                                                patches=patches)
             f.write(content)
 
 
