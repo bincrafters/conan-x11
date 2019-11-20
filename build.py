@@ -42,7 +42,6 @@ if __name__ == "__main__":
 
     conan_instance, _, _ = conan_api.Conan.factory()
     env_vars = {}
-    entry_script = None
 
     if tools.os_info.is_linux:
         cache_dir = "data"
@@ -50,17 +49,17 @@ if __name__ == "__main__":
         tools.mkdir(cache_dir)
         path = os.path.abspath(cache_dir)
         docker_args = "-v {}:/home/conan/.conan/data".format(path)
-        entry_script = ".ci/entry.py"
         env_vars["CONAN_DOCKER_RUN_OPTIONS"] = docker_args
     elif tools.os_info.is_macos:
         export_recipes()
 
-    for package in json_data["6"]:
-        recipe = "conanfile-{}.py".format(package.lower())
-        test_package_folder = "test_package-{}".format(package.lower())
-        env_vars["CONAN_VERSION"] = conan_instance.inspect(path=recipe, attributes=["version"])["version"]
-        env_vars["CONAN_CONANFILE"] = recipe
-        with tools.environment_append(env_vars):
-            builder = build_template_default.get_builder(docker_entry_script=entry_script)
-            builder.update_build_if(lambda build: True, new_env_vars={"MAKEFLAGS": "--silent"})
-            builder.run()
+    for index in range(6):
+        for package in json_data[str(index)]:
+            recipe = "conanfile-{}.py".format(package.lower())
+            test_package_folder = "test_package-{}".format(package.lower())
+            env_vars["CONAN_VERSION"] = conan_instance.inspect(path=recipe, attributes=["version"])["version"]
+            env_vars["CONAN_CONANFILE"] = recipe
+            with tools.environment_append(env_vars):
+                builder = build_template_default.get_builder()
+                builder.update_build_if(lambda build: True, new_env_vars={"MAKEFLAGS": "--silent"})
+                builder.run()

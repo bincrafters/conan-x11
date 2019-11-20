@@ -165,21 +165,21 @@
         "version": "1.1.4",
         "sha256": "895ee0986b32fbfcda7f4f25ef6cbacfa760e1690bf59f02085ce0e7d1eebb41",
         "description": "X font encoding library",
-        "requires": ["xorgproto", "util-macros"]
+        "requires": ["xorgproto", "util-macros", "zlib/1.2.11@"]
     },
     {
         "name": "libXfont2",
         "version": "2.0.3",
         "sha256": "a4b761a37528353a2b83dba364d7c1fd6aef2d554a1a019815f24f7f8866890e",
         "description": "X font handling library for server & utilities",
-        "requires": ["libfontenc", "xtrans", "freetype/2.10.0@bincrafters/stable"]
+        "requires": ["libfontenc", "xtrans", "freetype/2.10.1@"]
     },
     {
         "name": "libXft",
         "version": "2.3.3",
         "sha256": "3c3cf88b1a96e49a3d87d67d9452d34b6e25e96ae83959b8d0a980935014d701",
         "description": "X FreeType library",
-        "requires": ["libXrender", "freetype/2.10.0@bincrafters/stable", "fontconfig/2.13.91@conan/stable"]
+        "requires": ["libXrender", "freetype/2.10.1@", "fontconfig/2.13.91@conan/stable"]
     },
     {
         "name": "libXi",
@@ -207,6 +207,7 @@
         "version": "1.2.0",
         "sha256": "5b62feee09f276d74054787df030fceb41034de84174abec6d81c591145e043a",
         "description": "Xlib-based X-Resource extension client library",
+        "libs": ["XRes"],
         "requires": ["libX11", "libXext"]
     },
     {
@@ -287,5 +288,51 @@
         "namespace": "proto",
         "requires": [],
         "header-only": true
+    },
+    {
+        "name": "xcb-util",
+        "version": "0.4.0",
+        "sha256": "0ed0934e2ef4ddff53fcc70fc64fb16fe766cd41ee00330312e20a985fd927a7",
+        "description": "utility functions for other XCB utilities.",
+        "namespace": "xcb",
+        "requires": ["libxcb"],
+        "libs": ["xcb-util"]
+    },
+    {
+        "name": "xcb-util-wm",
+        "version": "0.4.0",
+        "sha256": "48c9b2a8c5697e0fde189706a6fa4b09b7b65762d88a495308e646eaf891f42a",
+        "description": " XCB ICCCM and EWMH bindings",
+        "namespace": "xcb",
+        "requires": ["libxcb"],
+        "libs": ["xcb-ewmh","xcb-icccm"]
+    },
+    {
+        "name": "xcb-util-image",
+        "version": "0.4.0",
+        "sha256": "cb2c86190cf6216260b7357a57d9100811bb6f78c24576a3a5bfef6ad3740a42",
+        "description": "XCB image convenience library",
+        "namespace": "xcb",
+        "requires": ["xcb-util"],
+        "libs": ["xcb-image"],
+        "patches": ["clang.patch"]
+    },
+    {
+        "name": "xcb-util-keysyms",
+        "version": "0.4.0",
+        "sha256": "0807cf078fbe38489a41d755095c58239e1b67299f14460dec2ec811e96caa96",
+        "description": "Library for handling standard X key constants and conversion to/from keycodes.",
+        "namespace": "xcb",
+        "requires": ["libxcb"],
+        "libs": ["xcb-keysyms"]
+    },
+    {
+        "name": "xcb-util-renderutil",
+        "version": "0.3.9",
+        "sha256": "55eee797e3214fe39d0f3f4d9448cc53cffe06706d108824ea37bb79fcedcad5",
+        "description": "convenience functions for the Render extension",
+        "namespace": "xcb",
+        "requires": ["libxcb"],
+        "libs": ["xcb-render-util"]
     }
 ]
