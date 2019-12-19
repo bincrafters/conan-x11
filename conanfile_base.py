@@ -41,15 +41,14 @@ class BaseHeaderOnly(ConanFile):
 
     def build(self):
         def _get_pc_files(package):
-            if package in self.deps_cpp_info.deps:
-                lib_path = self.deps_cpp_info[package].rootpath
-                for dirpath, _, filenames in os.walk(lib_path):
-                    for filename in filenames:
-                        if filename.endswith('.pc'):
-                            shutil.copyfile(os.path.join(dirpath, filename), filename)
-                            tools.replace_prefix_in_pc_file(filename, lib_path)
-                for dep in self.deps_cpp_info[package].public_deps:
-                    _get_pc_files(dep)
+            lib_path = self.deps_cpp_info[package].rootpath
+            for dirpath, _, filenames in os.walk(lib_path):
+                for filename in filenames:
+                    if filename.endswith('.pc'):
+                        shutil.copyfile(os.path.join(dirpath, filename), filename)
+                        tools.replace_prefix_in_pc_file(filename, lib_path)
+            for dep in self.deps_cpp_info[package].public_deps:
+                _get_pc_files(dep)
         for dep in self.deps_cpp_info.deps:
             _get_pc_files(dep)
 
