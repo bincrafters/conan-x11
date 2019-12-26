@@ -36,8 +36,6 @@ class BaseHeaderOnly(ConanFile):
                     if filename.endswith('.pc'):
                         shutil.copyfile(os.path.join(dirpath, filename), filename)
                         tools.replace_prefix_in_pc_file(filename, lib_path)
-        if os.path.exists('zlib.pc'):
-            os.rename('zlib.pc', 'ZLIB.pc')
 
         with tools.chdir(self._source_subfolder):
             args = ["--disable-dependency-tracking"]
