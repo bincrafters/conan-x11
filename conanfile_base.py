@@ -20,6 +20,10 @@ class BaseHeaderOnly(ConanFile):
     def package_id(self):
         self.info.header_only()
 
+    def configure(self):
+        del self.settings.compiler.libcxx
+        del self.settings.compiler.cppstd
+
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
         self.copy(pattern="COPYING", dst="licenses", src=self._source_subfolder)
@@ -51,6 +55,7 @@ class BaseLib(BaseHeaderOnly):
     default_options = {"shared": False, "fPIC": True}
 
     def configure(self):
+        super(BaseLib, self).configure()
         if self.settings.os == "Windows":
             del self.options.fPIC
 
