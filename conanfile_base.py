@@ -1,6 +1,7 @@
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import os
 import glob
+import shutil
 
 
 class BaseHeaderOnly(ConanFile):
@@ -10,6 +11,7 @@ class BaseHeaderOnly(ConanFile):
     author = "Bincrafters <bincrafters@gmail.com>"
     settings = "os", "arch", "compiler", "build_type"
     _source_subfolder = "source_subfolder"
+    generators = "pkg_config"
 
     def package_info(self):
         self.cpp_info.builddirs.extend([os.path.join("share", "pkgconfig"),
@@ -17,6 +19,10 @@ class BaseHeaderOnly(ConanFile):
 
     def package_id(self):
         self.info.header_only()
+
+    def configure(self):
+        del self.settings.compiler.libcxx
+        del self.settings.compiler.cppstd
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
@@ -26,33 +32,22 @@ class BaseHeaderOnly(ConanFile):
     def _configure_args(self):
         return []
 
-    def _format_cflags(self, dep):
-        includes = self.deps_cpp_info[dep].include_paths
-        includes = ["-I%s" % include for include in includes]
-        return " ".join(includes)
-
-    def _format_ldflags(self, dep):
-        libs = self.deps_cpp_info[dep].libs
-        libs = ["-l%s" % lib for lib in libs]
-        lib_paths = self.deps_cpp_info[dep].lib_paths
-        lib_paths = ["-L%s" % lib_path for lib_path in lib_paths]
-        return " ".join(libs + lib_paths)
-
     def build(self):
+        for package in self.deps_cpp_info.deps:
+            lib_path = self.deps_cpp_info[package].rootpath
+            for dirpath, _, filenames in os.walk(lib_path):
+                for filename in filenames:
+                    if filename.endswith('.pc'):
+                        shutil.copyfile(os.path.join(dirpath, filename), filename)
+                        tools.replace_prefix_in_pc_file(filename, lib_path)
+
         with tools.chdir(self._source_subfolder):
             args = ["--disable-dependency-tracking"]
             args.extend(self._configure_args)
             env_build = AutoToolsBuildEnvironment(self)
-            env_build_vars = env_build.vars
-            if "freetype" in self.deps_cpp_info.deps:
-                env_build_vars["FREETYPE_CFLAGS"] = self._format_cflags("freetype")
-                env_build_vars["FREETYPE_LIBS"] = self._format_ldflags("freetype")
-            if "fontconfig" in self.deps_cpp_info.deps:
-                env_build_vars["FONTCONFIG_CFLAGS"] = self._format_cflags("fontconfig")
-                env_build_vars["FONTCONFIG_LIBS"] = self._format_ldflags("fontconfig")
-            env_build.configure(vars=env_build_vars, args=args, pkg_config_paths=self.deps_cpp_info.build_paths)
-            env_build.make(vars=env_build_vars)
-            env_build.install(vars=env_build_vars, args=["-j1"])
+            env_build.configure(args=args, pkg_config_paths=self.build_folder)
+            env_build.make()
+            env_build.install(args=["-j1"])
 
 
 class BaseLib(BaseHeaderOnly):
@@ -60,6 +55,7 @@ class BaseLib(BaseHeaderOnly):
     default_options = {"shared": False, "fPIC": True}
 
     def configure(self):
+        super(BaseLib, self).configure()
         if self.settings.os == "Windows":
             del self.options.fPIC
 
