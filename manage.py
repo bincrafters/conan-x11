@@ -36,6 +36,7 @@ class {classname}Conan({baseclass}):
     def package_info(self):
         super({classname}Conan, self).package_info()
         {libs}
+        {system_libs}
 """
 
 libraries = json.load(open("x11.json"))
@@ -83,6 +84,10 @@ def gen(args):
             elif not header_only:
                 libs = ['"%s"' % name[3:]]
                 libs = "self.cpp_info.libs.extend([%s])" % ", ".join(libs)
+            system_libs = ""
+            if "system_libs" in info:
+                system_libs = ['"%s"' % lib for lib in info["system_libs"]]
+                system_libs = "self.cpp_info.system_libs.extend([%s])" % ", ".join(system_libs)
             patches = info["patches"] if "patches" in info else "[]"
             baseclass = "BaseHeaderOnly" if header_only else "BaseLib"
             namespace = info["namespace"] if "namespace" in info else "lib"
@@ -94,6 +99,7 @@ def gen(args):
                                                 name=name,
                                                 baseclass=baseclass,
                                                 libs=libs,
+                                                system_libs=system_libs,
                                                 classname=classname,
                                                 patches=patches)
             f.write(content)
