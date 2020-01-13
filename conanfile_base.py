@@ -12,6 +12,7 @@ class BaseHeaderOnly(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     _source_subfolder = "source_subfolder"
     generators = "pkg_config"
+    _autotools = None
 
     def package_info(self):
         self.cpp_info.builddirs.extend([os.path.join("share", "pkgconfig"),
@@ -27,10 +28,21 @@ class BaseHeaderOnly(ConanFile):
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
         self.copy(pattern="COPYING", dst="licenses", src=self._source_subfolder)
+        with tools.chdir(self._source_subfolder):
+            autotools = self._configure_autotools()
+            autotools.install(args=["-j1"])
 
     @property
     def _configure_args(self):
         return []
+
+    def _configure_autotools(self):
+        if not self._autotools:
+            args = ["--disable-dependency-tracking"]
+            args.extend(self._configure_args)
+            self._autotools = AutoToolsBuildEnvironment(self)
+            self._autotools.configure(args=args, pkg_config_paths=self.build_folder)
+        return self._autotools
 
     def build(self):
         for package in self.deps_cpp_info.deps:
@@ -42,12 +54,8 @@ class BaseHeaderOnly(ConanFile):
                         tools.replace_prefix_in_pc_file(filename, lib_path)
 
         with tools.chdir(self._source_subfolder):
-            args = ["--disable-dependency-tracking"]
-            args.extend(self._configure_args)
-            env_build = AutoToolsBuildEnvironment(self)
-            env_build.configure(args=args, pkg_config_paths=self.build_folder)
-            env_build.make()
-            env_build.install(args=["-j1"])
+            autotools = self._configure_autotools()
+            autotools.make()
 
 
 class BaseLib(BaseHeaderOnly):
