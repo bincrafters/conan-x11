@@ -82,7 +82,8 @@
         "sha256": "69d1a27cba722dca897198a23fa8d3cad3ec0c715e00205ea4398ec68a4258a5",
         "description": "Core X11 protocol client library (aka \"Xlib\")",
         "requires": ["xorgproto", "xtrans", "libxcb"],
-        "system_libs": ["dl"]
+        "system_libs": ["dl"],
+        "patches": ["libx11.patch"]
     },
     {
         "name": "libXext",
