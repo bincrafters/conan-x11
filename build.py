@@ -48,6 +48,7 @@ if __name__ == "__main__":
         tools.rmdir(cache_dir)
         tools.mkdir(cache_dir)
         path = os.path.abspath(cache_dir)
+        os.system('chmod a+w ' + path)
         docker_args = "-v {}:/home/conan/.conan/data".format(path)
         env_vars["CONAN_DOCKER_RUN_OPTIONS"] = docker_args
     elif tools.os_info.is_macos:
