@@ -3,6 +3,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 from __future__ import print_function
+from bincrafters import build_shared
 import argparse
 import sys
 import subprocess
@@ -43,12 +44,11 @@ libraries = json.load(open("x11.json"))
 
 
 def get_channel_name():
-    stable_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", "stable/*")
-    if os.getenv("TRAVIS") and \
-       re.match(stable_pattern, os.getenv("TRAVIS_BRANCH")) and \
-       os.getenv("TRAVIS_PULL_REQUEST", "false") == "false":
-       return "stable"
-    return os.getenv("CONAN_CHANNEL", "testing")
+    return os.getenv("CONAN_CHANNEL", build_shared.get_channel_from_ci() or "testing")
+
+
+def get_username():
+    return os.getenv("CONAN_USERNAME", build_shared.get_username_from_ci() or "bincrafters")
 
 
 def find(name):
@@ -71,7 +71,7 @@ def gen(args):
                     if "@" in require:
                         requires.append('"%s"' % require)
                     else:
-                        requires.append('"%s/%s@bincrafters/%s"' % (require.lower(), find(require)["version"], get_channel_name()))
+                        requires.append('"%s/%s@%s/%s"' % (require.lower(), find(require)["version"], get_username(), get_channel_name()))
                 requires = ", ".join(requires)
                 requires = "requires = (" + requires + ")"
             else:
@@ -109,7 +109,7 @@ def create(args):
     for info in libraries:
         name = info["name"]
         filename = "conanfile-%s.py" % name.lower()
-        subprocess.check_call(["conan", "create", filename, "bincrafters/%s" % get_channel_name(), "-k"])
+        subprocess.check_call(["conan", "create", filename, "%s/%s" % (get_username(), get_channel_name()), "-k"])
 
 
 def groups(args):
