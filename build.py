@@ -12,18 +12,12 @@ from conans.client import conan_api
 
 
 def get_channel_name():
-    stable_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", "stable/*")
-    if os.getenv("TRAVIS") and \
-       re.match(stable_pattern, os.getenv("TRAVIS_BRANCH")) and \
-       os.getenv("TRAVIS_PULL_REQUEST", "false") == "false":
-       return "stable"
-    return os.getenv("CONAN_CHANNEL", "testing")
+    return os.getenv("CONAN_CHANNEL", build_shared.get_channel_from_ci() or "testing")
 
 def get_username():
-    return os.getenv("CONAN_USERNAME", "bincrafters")
+    return os.getenv("CONAN_USERNAME", build_shared.get_username_from_ci() or "bincrafters")
 
 def export_recipes():
-    channel = get_channel_name()
     namespace = "{}/{}".format(get_username(), get_channel_name())
     with open("groups.json") as json_file:
         json_data = json.load(json_file)
