@@ -15,6 +15,8 @@ class BaseHeaderOnly(ConanFile):
     _autotools = None
 
     def package_info(self):
+        if self.name.startswith('lib') and not self.name in ['libfs']:
+            self.cpp_info.names['pkg_config'] = self.name[3:]
         self.cpp_info.builddirs.extend([os.path.join("share", "pkgconfig"),
                                         os.path.join("lib", "pkgconfig")])
 
@@ -31,6 +33,9 @@ class BaseHeaderOnly(ConanFile):
         with tools.chdir(self._source_subfolder):
             autotools = self._configure_autotools()
             autotools.install(args=["-j1"])
+            
+        if self.name.startswith('lib') and not self.name in ['libfs']:
+            assert(os.path.isfile(os.path.join(self.package_folder, 'lib', 'pkgconfig', self.name[3:] + '.pc')))
 
     @property
     def _configure_args(self):
