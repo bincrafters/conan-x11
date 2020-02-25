@@ -1,8 +1,8 @@
 ## Package Status
 
-| Bintray | Windows | Linux & macOS |
-|:--------:|:---------:|:-----------------:|
-|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/package_name%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/package_name%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-package_name?svg=true)](https://ci.appveyor.com/project/bincrafters/conan-package_name)|[![Build Status](https://travis-ci.com/bincrafters/conan-package_name.svg)](https://travis-ci.com/bincrafters/conan-package_name)|
+| Bintray | Linux |
+|:--------:|:-----------:|
+|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/libx11%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/libx11%3Abincrafters/_latestVersion)|[![Build Status](https://github.com/bincrafters/conan-x11/workflows/.github/workflows/conan.yml/badge.svg)](https://github.com/bincrafters/conan-x11/actions)|
 
 ## Conan Information
 
