@@ -19,6 +19,8 @@ class BaseHeaderOnly(ConanFile):
             self.cpp_info.names['pkg_config'] = self.name[3:]
         self.cpp_info.builddirs.extend([os.path.join("share", "pkgconfig"),
                                         os.path.join("lib", "pkgconfig")])
+        self.cpp_info.includedirs = [path for path in self.cpp_info.includedirs if os.path.isdir(path)]
+        self.cpp_info.libdirs = [path for path in self.cpp_info.libdirs if os.path.isdir(path)]
 
     def package_id(self):
         self.info.header_only()
