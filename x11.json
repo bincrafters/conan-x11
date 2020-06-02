@@ -206,7 +206,7 @@
         "version": "2.3.3",
         "sha256": "3c3cf88b1a96e49a3d87d67d9452d34b6e25e96ae83959b8d0a980935014d701",
         "description": "X FreeType library",
-        "requires": ["libXrender", "freetype/2.10.1@", "fontconfig/2.13.91@conan/stable"]
+        "requires": ["libXrender", "freetype/2.10.1@", "fontconfig/2.13.91@"]
     },
     {
         "name": "libXi",
