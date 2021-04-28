@@ -1,0 +1,88 @@
+diff -Naur libICE-1.0.10-origin/configure libICE-1.0.10/configure
+--- libICE-1.0.10-origin/configure	2019-07-14 19:43:25.000000000 +0200
++++ libICE-1.0.10/configure	2019-07-14 19:43:25.000000000 +0200
+@@ -697,6 +697,7 @@
+ am__EXEEXT_TRUE
+ LTLIBOBJS
+ LIBOBJS
++BSDLIB
+ MAKE_LINT_LIB_FALSE
+ MAKE_LINT_LIB_TRUE
+ LINTLIB
+@@ -19789,6 +19790,10 @@
+ 
+ LINT_FLAGS="${LINT_FLAGS} ${ICE_CFLAGS} ${XTRANS_CFLAGS}"
+ 
++if test "x$ac_cv_lib_bsd_arc4random_buf" = xyes; then
++    BSDLIB=-lbsd
++fi
++
+ ac_config_files="$ac_config_files Makefile doc/Makefile specs/Makefile src/Makefile ice.pc"
+ 
+ cat >confcache <<\_ACEOF
+diff -Naur libICE-1.0.10-origin/configure.ac libICE-1.0.10/configure.ac
+--- libICE-1.0.10-origin/configure.ac	2019-07-14 19:43:16.000000000 +0200
++++ libICE-1.0.10/configure.ac	2019-07-14 19:43:16.000000000 +0200
+@@ -47,6 +47,11 @@
+ XORG_LINT_LIBRARY([ICE])
+ LINT_FLAGS="${LINT_FLAGS} ${ICE_CFLAGS} ${XTRANS_CFLAGS}"
+ 
++if test "x$ac_cv_lib_bsd_arc4random_buf" = xyes; then
++    BSDLIB=-lbsd
++fi
++AC_SUBST(BSDLIB)
++
+ AC_CONFIG_FILES([Makefile
+ 		doc/Makefile
+ 		specs/Makefile
+diff -Naur libICE-1.0.10-origin/doc/Makefile.in libICE-1.0.10/doc/Makefile.in
+--- libICE-1.0.10-origin/doc/Makefile.in	2019-07-14 19:43:27.000000000 +0200
++++ libICE-1.0.10/doc/Makefile.in	2019-07-14 19:43:27.000000000 +0200
+@@ -186,6 +186,7 @@
+ AUTOMAKE = @AUTOMAKE@
+ AWK = @AWK@
+ BASE_CFLAGS = @BASE_CFLAGS@
++BSDLIB = @BSDLIB@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+ CFLAGS = @CFLAGS@
+--- libICE-1.0.10-origin/ice.pc.in	2019-07-14 19:43:16.000000000 +0200
++++ libICE-1.0.10/ice.pc.in	2019-07-14 19:43:16.000000000 +0200
+@@ -9,3 +9,4 @@
+ Requires: xproto
+ Cflags: -I${includedir}
+ Libs: -L${libdir} -lICE
++Libs.Private: -lbsd
+diff -Naur libICE-1.0.10-origin/Makefile.in libICE-1.0.10/Makefile.in
+--- libICE-1.0.10-origin/Makefile.in	2019-07-14 19:43:27.000000000 +0200
++++ libICE-1.0.10/Makefile.in	2019-07-14 19:43:27.000000000 +0200
+@@ -245,6 +245,7 @@
+ AUTOMAKE = @AUTOMAKE@
+ AWK = @AWK@
+ BASE_CFLAGS = @BASE_CFLAGS@
++BSDLIB = @BSDLIB@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+ CFLAGS = @CFLAGS@
+diff -Naur libICE-1.0.10-origin/specs/Makefile.in libICE-1.0.10/specs/Makefile.in
+--- libICE-1.0.10-origin/specs/Makefile.in	2019-07-14 19:43:27.000000000 +0200
++++ libICE-1.0.10/specs/Makefile.in	2019-07-14 19:43:27.000000000 +0200
+@@ -186,6 +186,7 @@
+ AUTOMAKE = @AUTOMAKE@
+ AWK = @AWK@
+ BASE_CFLAGS = @BASE_CFLAGS@
++BSDLIB = @BSDLIB@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+ CFLAGS = @CFLAGS@
+diff -Naur libICE-1.0.10-origin/src/Makefile.in libICE-1.0.10/src/Makefile.in
+--- libICE-1.0.10-origin/src/Makefile.in	2019-07-14 19:43:27.000000000 +0200
++++ libICE-1.0.10/src/Makefile.in	2019-07-14 19:43:27.000000000 +0200
+@@ -219,6 +219,7 @@
+ AUTOMAKE = @AUTOMAKE@
+ AWK = @AWK@
+ BASE_CFLAGS = @BASE_CFLAGS@
++BSDLIB = @BSDLIB@
+ CC = @CC@
+ CCDEPMODE = @CCDEPMODE@
+ CFLAGS = @CFLAGS@
